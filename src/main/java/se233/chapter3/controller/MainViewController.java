@@ -9,9 +9,10 @@ import javafx.scene.control.*;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import se233.chapter3.Launcher;
 import se233.chapter3.model.FileEntry;
 import se233.chapter3.model.FileFreq;
@@ -28,6 +29,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class MainViewController {
+    private static final Logger logger = LogManager.getLogger(MainViewController.class);
     LinkedHashMap<String, List<FileFreq>> uniqueSets;
     @FXML
     private ListView<FileEntry> inputListView;
@@ -86,8 +88,10 @@ public class MainViewController {
                     for (int i=0; i<total_files; i++) {
                         try {
                             String filePath = inputListViewItems.get(i).getFilePath();
+                            String fileName = inputListViewItems.get(i).getFileName();
                             PdfDocument p = new PdfDocument(filePath);
                             completionService.submit(new WordCountMapTask(p));
+                            logger.info("Program is counting words in " + fileName);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
